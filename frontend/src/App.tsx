@@ -1,22 +1,23 @@
-import "@ant-design/v5-patch-for-react-19";
-
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
-import { AuthProvider, useAuth } from "./context/AuthContext";
-import AppLayout from "./layouts/AppLayout";
-import PublicLayout from "./layouts/PublicLayout";
-import AdminDashboard from "./pages/admin/Dashboard";
-import AdminLessons from "./pages/admin/Lessons";
-import AdminReports from "./pages/admin/Reports";
-import AdminRooms from "./pages/admin/Rooms";
-import AdminStudentDetail from "./pages/admin/StudentDetail";
-import AdminStudents from "./pages/admin/Students";
-import AdminTeachers from "./pages/admin/Teachers";
-import AdminUsers from "./pages/admin/Users";
-import Login from "./pages/auth/Login";
-import TeacherDashboard from "./pages/teacher/Dashboard";
-import TeacherLessons from "./pages/teacher/Lessons";
-import TeacherReports from "./pages/teacher/Reports";
-import { ProtectedRoute } from "./routes/ProtectedRoute";
+import { AuthProvider, useAuth } from "./context";
+import { AppLayout, PublicLayout } from "./layouts";
+import {
+  AdminDashboard,
+  AdminLessons,
+  AdminReports,
+  AdminRooms,
+  AdminStudentDetail,
+  AdminStudents,
+  AdminTeachers,
+  AdminUsers,
+} from "./pages/admin";
+import { Login } from "./pages/auth";
+import {
+  TeacherDashboard,
+  TeacherLessons,
+  TeacherReports,
+} from "./pages/teacher";
+import { ProtectedRoute } from "./routes";
 
 function RootRedirect() {
   const { user } = useAuth();
