@@ -123,6 +123,11 @@ const AppLayout = () => {
             <span className="font-semibold">Lavita</span>
           </div>
           <Drawer
+            styles={{
+              body: {
+                padding: "0 10px",
+              },
+            }}
             open={mobileOpen}
             onClose={() => setMobileOpen(false)}
             placement="left"
@@ -135,8 +140,8 @@ const AppLayout = () => {
       )}
 
       <Content className="p-0 h-full w-full bg-gray-50">
-        <div className="flex items-center gap-3 px-6 py-3 border-b border-gray-200 bg-white sticky top-0 z-10">
-          {isLgUp && (
+        {isLgUp && (
+          <div className="flex items-center gap-3 px-6 py-3 border-b border-gray-200 bg-white sticky top-0 z-10">
             <Button
               type="text"
               onClick={() => setCollapsed((v) => !v)}
@@ -148,9 +153,9 @@ const AppLayout = () => {
                 height={20}
               />
             </Button>
-          )}
-          <Breadcrumb separator=">" items={breadcrumbItems} />
-        </div>
+            <Breadcrumb separator=">" items={breadcrumbItems} />
+          </div>
+        )}
         <div className="p-6">
           <Outlet />
         </div>
