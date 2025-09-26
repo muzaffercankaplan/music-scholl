@@ -23,13 +23,41 @@ export type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<AuthUser | null>(null);
+  const STORAGE_KEY = "ms_auth_user";
+
+  const [user, setUser] = useState<AuthUser | null>(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as AuthUser | null;
+      return parsed ?? null;
+    } catch {
+      return null;
+    }
+  });
 
   const loginAs = (role: UserRole) => {
-    setUser({ id: "demo", name: role === "admin" ? "Admin" : "Teacher", role });
+    const next: AuthUser = {
+      id: "demo",
+      name: role === "admin" ? "Admin" : "Teacher",
+      role,
+    };
+    setUser(next);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    } catch {
+      // ignore storage write errors
+    }
   };
 
-  const logout = () => setUser(null);
+  const logout = () => {
+    setUser(null);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // ignore storage remove errors
+    }
+  };
 
   const value = useMemo(() => ({ user, loginAs, logout }), [user]);
 

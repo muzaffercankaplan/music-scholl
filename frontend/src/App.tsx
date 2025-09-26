@@ -1,4 +1,6 @@
+import { ConfigProvider } from "antd";
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
+import { appTheme } from "./config/antConfigTheme";
 import { AuthProvider, useAuth } from "./context";
 import { AppLayout, PublicLayout } from "./layouts";
 import {
@@ -68,8 +70,10 @@ function AppRouter() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AppRouter />
-    </AuthProvider>
+    <ConfigProvider theme={appTheme}>
+      <AuthProvider>
+        <AppRouter />
+      </AuthProvider>
+    </ConfigProvider>
   );
 }
