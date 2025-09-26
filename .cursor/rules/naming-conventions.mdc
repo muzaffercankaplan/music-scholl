@@ -1,0 +1,10 @@
+---
+globs: *.ts,*.tsx
+---
+
+# İsimlendirme ve Dosya Düzeni
+
+- Dosya adları: kebab-case; tip dosyaları domain adıyla (auth.ts, student.ts).
+- Fonksiyonlar: fiil/fiil-öbeği (getUser, listStudentsRequest).
+- Değişkenler: anlamlı, kısaltmasız; tek harfli isimlerden kaçınılır.
+- Hook isimleri: `useXxx` ile başlar (useStudentsQuery, useLoginMutation).

@@ -1,0 +1,11 @@
+---
+globs: *.ts,*.tsx
+---
+
+# TypeScript/ReacT Kuralları
+
+- Her zaman açık tipler: public API ve fonksiyon imzaları net olmalı.
+- Domain tipleri `src/types` altından import edilecek.
+- React Query: istekler `services/*` içinde; componentler yalnızca hook çağırır.
+- Context dosyaları sadece state ve yönlendirme içindir; istek yapılmaz.
+- Hata yakalama: anlamlı mesaj döndür, sessiz yutma yok.

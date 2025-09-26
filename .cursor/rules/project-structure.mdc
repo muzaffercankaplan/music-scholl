@@ -1,0 +1,26 @@
+---
+alwaysApply: true
+---
+
+# Proje Yapısı ve Giriş Noktaları
+
+- Frontend (Vite + React 19 + TS)
+
+  - Giriş: [frontend/src/main.tsx](mdc:frontend/src/main.tsx) → [frontend/src/App.tsx](mdc:frontend/src/App.tsx)
+  - Router: [frontend/src/App.tsx](mdc:frontend/src/App.tsx)
+  - Layoutlar: [frontend/src/layouts](mdc:frontend/src/layouts)
+  - Rotalar/Guard: [frontend/src/routes](mdc:frontend/src/routes)
+  - Context: [frontend/src/context](mdc:frontend/src/context)
+  - Servisler: [frontend/src/services](mdc:frontend/src/services)
+  - Ortak Tipler: [frontend/src/types](mdc:frontend/src/types)
+  - Altyapı (ENV/HTTP/Query): [frontend/src/lib](mdc:frontend/src/lib)
+
+- Backend (NestJS 10 + TS)
+  - Giriş: [backend/src/main.ts](mdc:backend/src/main.ts)
+  - Uygulama Modülü: [backend/src/app.module.ts](mdc:backend/src/app.module.ts)
+  - Modüller: [backend/src/auth](mdc:backend/src/auth), [backend/src/students](mdc:backend/src/students), [backend/src/lessons](mdc:backend/src/lessons)
+
+# Çalıştırma
+
+- Backend: `cd backend && npm i && npm run start:dev`
+- Frontend: `.env.local` → `VITE_API_BASE_URL=http://localhost:3000`, ardından `cd frontend && npm run dev`
