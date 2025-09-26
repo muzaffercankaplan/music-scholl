@@ -1,4 +1,5 @@
 import { Body, Controller, Post, UnauthorizedException } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 
 type Role = "admin" | "teacher";
 
@@ -27,6 +28,7 @@ const users: Array<{
 
 @Controller("auth")
 export class AuthController {
+  constructor(private readonly jwt: JwtService) {}
   @Post("login")
   login(@Body() body: { email: string; password: string }) {
     const { email, password } = body ?? ({} as any);
@@ -36,9 +38,11 @@ export class AuthController {
     if (!found) {
       throw new UnauthorizedException("invalid credentials");
     }
-    return {
-      accessToken: `token-${found.role}-${Date.now()}`,
-      user: { id: found.id, name: found.name, role: found.role },
-    };
+    const accessToken = this.jwt.sign({
+      sub: found.id,
+      name: found.name,
+      role: found.role,
+    });
+    return { accessToken };
   }
 }
