@@ -5,6 +5,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { publicHttp } from "../lib/http";
 
 export type UserRole = "admin" | "teacher";
 
@@ -17,7 +18,7 @@ export type AuthUser = {
 export type AuthContextValue = {
   user: AuthUser | null;
   token: string | null;
-  loginAs: (role: UserRole) => void;
+  login: (params: { email: string; password: string }) => Promise<void>;
   logout: () => void;
 };
 
@@ -46,20 +47,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   });
 
-  const loginAs = (role: UserRole) => {
-    const next: AuthUser = {
-      id: "demo",
-      name: role === "admin" ? "Admin" : "Teacher",
-      role,
+  const login = async ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => {
+    const res = await publicHttp.post("/auth/login", { email, password });
+    const { accessToken, user: apiUser } = res.data as {
+      accessToken: string;
+      user: AuthUser;
     };
-    setUser(next);
+    setUser(apiUser);
+    setToken(accessToken);
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      // demo amaçlı sabit bir token
-      const demoToken =
-        role === "admin" ? "demo-admin-token" : "demo-teacher-token";
-      setToken(demoToken);
-      localStorage.setItem(TOKEN_KEY, demoToken);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(apiUser));
+      localStorage.setItem(TOKEN_KEY, accessToken);
     } catch {
       // ignore storage write errors
     }
@@ -75,10 +79,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const value = useMemo(
-    () => ({ user, token, loginAs, logout }),
-    [user, token]
-  );
+  const value = useMemo(() => ({ user, token, login, logout }), [user, token]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

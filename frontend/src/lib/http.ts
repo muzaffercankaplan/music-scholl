@@ -1,4 +1,5 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios";
+import { ENV } from "./env";
 
 let accessToken: string | null = null;
 
@@ -7,14 +8,14 @@ export function setAccessToken(token: string | null) {
 }
 
 export const publicHttp = axios.create({
-  baseURL: "/api",
-  withCredentials: true,
+  baseURL: ENV.apiBaseUrl,
+  withCredentials: false,
   headers: { "Content-Type": "application/json" },
 });
 
 export const privateHttp = axios.create({
-  baseURL: "/api",
-  withCredentials: true,
+  baseURL: ENV.apiBaseUrl,
+  withCredentials: false,
   headers: { "Content-Type": "application/json" },
 });
 

@@ -1,3 +1,15 @@
+# Frontend
+
+## Environment
+
+Create `.env.local` with:
+
+```
+VITE_API_BASE_URL=http://localhost:3000
+```
+
+Or copy `.env.example` and adjust values.
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
