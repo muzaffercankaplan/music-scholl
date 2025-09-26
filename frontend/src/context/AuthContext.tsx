@@ -5,20 +5,15 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { publicHttp } from "../lib/http";
+import { useLoginMutation, type LoginParams } from "../services";
+import type { AuthUser } from "../types/auth";
 
-export type UserRole = "admin" | "teacher";
-
-export type AuthUser = {
-  id: string;
-  name: string;
-  role: UserRole;
-};
+// types moved to src/types/auth
 
 export type AuthContextValue = {
   user: AuthUser | null;
   token: string | null;
-  login: (params: { email: string; password: string }) => Promise<void>;
+  login: (params: LoginParams) => Promise<void>;
   logout: () => void;
 };
 
@@ -47,6 +42,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   });
 
+  const loginMutation = useLoginMutation();
+
   const login = async ({
     email,
     password,
@@ -54,11 +51,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     email: string;
     password: string;
   }) => {
-    const res = await publicHttp.post("/auth/login", { email, password });
-    const { accessToken, user: apiUser } = res.data as {
-      accessToken: string;
-      user: AuthUser;
-    };
+    const { accessToken, user: apiUser } = await loginMutation.mutateAsync({
+      email,
+      password,
+    });
     setUser(apiUser);
     setToken(accessToken);
     try {

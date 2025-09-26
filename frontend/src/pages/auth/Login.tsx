@@ -3,6 +3,7 @@ import { Alert, Button, Card, Form, Input, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../context/AuthContext";
+import type { LoginParams } from "../../services";
 
 const Login = () => {
   const { login, user } = useAuth();
@@ -18,7 +19,7 @@ const Login = () => {
     }
   }, [user, navigate]);
 
-  const onFinish = async (values: { email: string; password: string }) => {
+  const onFinish = async (values: LoginParams) => {
     setError(null);
     setLoading(true);
     try {
