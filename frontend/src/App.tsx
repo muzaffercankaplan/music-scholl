@@ -1,3 +1,4 @@
+import "@ant-design/v5-patch-for-react-19";
 import { ConfigProvider } from "antd";
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
 import { appTheme } from "./config/antConfigTheme";
@@ -31,23 +32,31 @@ function RootRedirect() {
 
 function AppRouter() {
   const router = createBrowserRouter([
+    // Public area (PublicLayout internally redirects if authenticated)
     {
       element: <PublicLayout />,
       children: [{ path: "/login", element: <Login /> }],
     },
+    // Teacher protected area (AppLayout only renders if authorized)
     {
-      element: <AppLayout />,
+      element: <ProtectedRoute allow="teacher" />,
       children: [
         {
-          element: <ProtectedRoute allow="teacher" />,
+          element: <AppLayout />,
           children: [
             { path: "/teacher", element: <TeacherDashboard /> },
             { path: "/teacher/lessons", element: <TeacherLessons /> },
             { path: "/teacher/reports", element: <TeacherReports /> },
           ],
         },
+      ],
+    },
+    // Admin protected area (AppLayout only renders if authorized)
+    {
+      element: <ProtectedRoute allow="admin" />,
+      children: [
         {
-          element: <ProtectedRoute allow="admin" />,
+          element: <AppLayout />,
           children: [
             { path: "/admin", element: <AdminDashboard /> },
             { path: "/admin/students", element: <AdminStudents /> },
@@ -59,10 +68,10 @@ function AppRouter() {
             { path: "/admin/users", element: <AdminUsers /> },
           ],
         },
-        { path: "/", element: <RootRedirect /> },
-        { path: "*", element: <Navigate to="/" replace /> },
       ],
     },
+    { path: "/", element: <RootRedirect /> },
+    { path: "*", element: <Navigate to="/" replace /> },
   ]);
 
   return <RouterProvider router={router} />;

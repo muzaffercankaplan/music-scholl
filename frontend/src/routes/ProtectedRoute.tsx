@@ -11,3 +11,12 @@ export const ProtectedRoute = ({ allow }: { allow: "admin" | "teacher" }) => {
     );
   return <Outlet />;
 };
+
+export const PublicOnlyRoute = () => {
+  const { user } = useAuth();
+  if (user)
+    return (
+      <Navigate to={user.role === "admin" ? "/admin" : "/teacher"} replace />
+    );
+  return <Outlet />;
+};
