@@ -8,7 +8,9 @@ import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
 import { ProtectedRoute } from "./routes";
 
 //! Context Imports
+import { useEffect } from "react";
 import { AuthProvider, useAuth } from "./context";
+import { setAccessToken } from "./lib/http";
 
 //! Layout Imports
 import { AppLayout, PublicLayout } from "./layouts";
@@ -48,6 +50,11 @@ function RootRedirect() {
 }
 
 function AppRouter() {
+  // AuthContext token değiştiğinde privateHttp için header güncelle
+  const { token } = useAuth();
+  useEffect(() => {
+    setAccessToken(token ?? null);
+  }, [token]);
   const router = createBrowserRouter([
     // Public area (PublicLayout internally redirects if authenticated)
     {

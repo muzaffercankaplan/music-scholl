@@ -16,6 +16,7 @@ export type AuthUser = {
 
 export type AuthContextValue = {
   user: AuthUser | null;
+  token: string | null;
   loginAs: (role: UserRole) => void;
   logout: () => void;
 };
@@ -24,6 +25,7 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const STORAGE_KEY = "ms_auth_user";
+  const TOKEN_KEY = "ms_access_token";
 
   const [user, setUser] = useState<AuthUser | null>(() => {
     try {
@@ -31,6 +33,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!raw) return null;
       const parsed = JSON.parse(raw) as AuthUser | null;
       return parsed ?? null;
+    } catch {
+      return null;
+    }
+  });
+
+  const [token, setToken] = useState<string | null>(() => {
+    try {
+      return localStorage.getItem(TOKEN_KEY);
     } catch {
       return null;
     }
@@ -45,6 +55,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(next);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      // demo amaçlı sabit bir token
+      const demoToken =
+        role === "admin" ? "demo-admin-token" : "demo-teacher-token";
+      setToken(demoToken);
+      localStorage.setItem(TOKEN_KEY, demoToken);
     } catch {
       // ignore storage write errors
     }
@@ -52,14 +67,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     setUser(null);
+    setToken(null);
     try {
-      localStorage.removeItem(STORAGE_KEY);
+      localStorage.clear();
     } catch {
       // ignore storage remove errors
     }
   };
 
-  const value = useMemo(() => ({ user, loginAs, logout }), [user]);
+  const value = useMemo(
+    () => ({ user, token, loginAs, logout }),
+    [user, token]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
