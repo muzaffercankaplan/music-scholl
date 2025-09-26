@@ -1,6 +1,6 @@
 //! Ant Design Imports
 import "@ant-design/v5-patch-for-react-19";
-import { ConfigProvider } from "antd";
+import { ConfigProvider, Spin } from "antd";
 import { appTheme } from "./config/antConfigTheme";
 
 //! Routes Imports
@@ -8,7 +8,8 @@ import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
 import { ProtectedRoute } from "./routes";
 
 //! Context Imports
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
+import SplashScreen from "./components/SplashScreen";
 import { AuthProvider, useAuth } from "./context";
 import { setAccessToken } from "./lib/http";
 
@@ -19,27 +20,21 @@ import { AppLayout, PublicLayout } from "./layouts";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { getQueryClient } from "./lib/query";
 
-//! Admin Pages Imports
-import {
-  AdminDashboard,
-  AdminLessons,
-  AdminReports,
-  AdminRooms,
-  AdminStudentDetail,
-  AdminStudents,
-  AdminTeachers,
-  AdminUsers,
-} from "./pages/admin";
+//! Lazy Pages Imports
+const Login = lazy(() => import("./pages/auth/Login"));
 
-//! Auth Pages Imports
-import { Login } from "./pages/auth";
+const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
+const AdminLessons = lazy(() => import("./pages/admin/Lessons"));
+const AdminReports = lazy(() => import("./pages/admin/Reports"));
+const AdminRooms = lazy(() => import("./pages/admin/Rooms"));
+const AdminStudentDetail = lazy(() => import("./pages/admin/StudentDetail"));
+const AdminStudents = lazy(() => import("./pages/admin/Students"));
+const AdminTeachers = lazy(() => import("./pages/admin/Teachers"));
+const AdminUsers = lazy(() => import("./pages/admin/Users"));
 
-//! Teacher Pages Imports
-import {
-  TeacherDashboard,
-  TeacherLessons,
-  TeacherReports,
-} from "./pages/teacher";
+const TeacherDashboard = lazy(() => import("./pages/teacher/Dashboard"));
+const TeacherLessons = lazy(() => import("./pages/teacher/Lessons"));
+const TeacherReports = lazy(() => import("./pages/teacher/Reports"));
 
 function RootRedirect() {
   const { user } = useAuth();
@@ -98,15 +93,30 @@ function AppRouter() {
     { path: "*", element: <Navigate to="/" replace /> },
   ]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[50vh] flex items-center justify-center">
+          <Spin size="large" />
+        </div>
+      }
+    >
+      <RouterProvider router={router} />
+    </Suspense>
+  );
 }
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setShowSplash(false), 900);
+    return () => clearTimeout(t);
+  }, []);
   return (
     <ConfigProvider theme={appTheme}>
       <QueryClientProvider client={getQueryClient()}>
         <AuthProvider>
-          <AppRouter />
+          {showSplash ? <SplashScreen /> : <AppRouter />}
         </AuthProvider>
       </QueryClientProvider>
     </ConfigProvider>
