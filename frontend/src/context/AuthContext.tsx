@@ -1,3 +1,5 @@
+import { jwtDecode } from "jwt-decode";
+
 import {
   createContext,
   useContext,
@@ -44,21 +46,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const loginMutation = useLoginMutation();
 
-  const login = async ({
-    email,
-    password,
-  }: {
-    email: string;
-    password: string;
-  }) => {
-    const { accessToken, user: apiUser } = await loginMutation.mutateAsync({
+  const login = async ({ email, password }: LoginParams) => {
+    const { accessToken } = await loginMutation.mutateAsync({
       email,
       password,
     });
-    setUser(apiUser);
     setToken(accessToken);
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(apiUser));
+      const claims = jwtDecode<{
+        sub: string;
+        name: string;
+        role: "admin" | "teacher";
+      }>(accessToken);
+      const nextUser: AuthUser = {
+        id: claims.sub,
+        name: claims.name,
+        role: claims.role,
+      };
+      setUser(nextUser);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser));
+    } catch {
+      // decode error: skip setting user from token
+    }
+    try {
       localStorage.setItem(TOKEN_KEY, accessToken);
     } catch {
       // ignore storage write errors

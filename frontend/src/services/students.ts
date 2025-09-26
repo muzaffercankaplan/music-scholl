@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { privateHttp } from "../lib/http";
-
-export type Student = { id: string; name: string };
+import type { Student } from "../types/student";
 
 export async function listStudentsRequest(): Promise<Student[]> {
   const res = await privateHttp.get("/students");

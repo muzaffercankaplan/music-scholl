@@ -1,9 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { publicHttp } from "../lib/http";
-import type { AuthUser } from "../types/auth";
 
 export type LoginParams = { email: string; password: string };
-export type LoginResponse = { accessToken: string; user: AuthUser };
+export type LoginResponse = { accessToken: string };
 
 export async function loginRequest(
   params: LoginParams
