@@ -1,4 +1,5 @@
 import type { ThemeConfig } from "antd";
+// AntD tema ayarı merkezi
 
 export const appTheme: ThemeConfig = {
   token: {

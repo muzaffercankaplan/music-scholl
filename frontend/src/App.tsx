@@ -1,9 +1,23 @@
+//! Ant Design Imports
 import "@ant-design/v5-patch-for-react-19";
 import { ConfigProvider } from "antd";
-import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
 import { appTheme } from "./config/antConfigTheme";
+
+//! Routes Imports
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router";
+import { ProtectedRoute } from "./routes";
+
+//! Context Imports
 import { AuthProvider, useAuth } from "./context";
+
+//! Layout Imports
 import { AppLayout, PublicLayout } from "./layouts";
+
+//! Query Client Imports
+import { QueryClientProvider } from "@tanstack/react-query";
+import { getQueryClient } from "./lib/query";
+
+//! Admin Pages Imports
 import {
   AdminDashboard,
   AdminLessons,
@@ -14,13 +28,16 @@ import {
   AdminTeachers,
   AdminUsers,
 } from "./pages/admin";
+
+//! Auth Pages Imports
 import { Login } from "./pages/auth";
+
+//! Teacher Pages Imports
 import {
   TeacherDashboard,
   TeacherLessons,
   TeacherReports,
 } from "./pages/teacher";
-import { ProtectedRoute } from "./routes";
 
 function RootRedirect() {
   const { user } = useAuth();
@@ -80,9 +97,11 @@ function AppRouter() {
 export default function App() {
   return (
     <ConfigProvider theme={appTheme}>
-      <AuthProvider>
-        <AppRouter />
-      </AuthProvider>
+      <QueryClientProvider client={getQueryClient()}>
+        <AuthProvider>
+          <AppRouter />
+        </AuthProvider>
+      </QueryClientProvider>
     </ConfigProvider>
   );
 }
